@@ -1,0 +1,61 @@
+📖 The Story of Subsets
+
+Goal:
+Given an array of unique numbers, find all possible subsets (the power set).
+
+Example:
+For nums = [1, 2],
+All subsets are: [ ] , [1] , [2] , [1, 2].
+
+🧩 The Three Parts of the Recursion Story
+
+1️⃣ Base Case (The Ending)
+When idx >= n, it means we’ve made decisions for all elements.
+So, we add the current subset (curr) to the answer list.
+
+2️⃣ Recursive Step (The Chapter Progression)
+At each ndex:
+Include the current number → move to next index.
+Exclude the current number → move to next index again.
+
+3️⃣ Leap of Faith (The Trust)
+We trust recursion to handle both possibilities —
+one where the current element is taken, and one where it’s not.
+
+⚙️ Complexity (in Simple Words)
+Every element has 2 choices → include or exclude.
+So total subsets = 2ⁿ.
+🕒 Time Complexity: O(2ⁿ × n) → (n for copying each subset)
+💾 Space Complexity: O(n) → (for recursive stack and current subset)
+
+💡 Key Takeaway
+
+Subset generation is a story of decisions —
+at each step, recursion explores both “include” and “exclude” paths.
+The power of recursion lies in trusting it to explore all possibilities.
+
+class Solution { 
+public:
+    void subset(int idx, vector<int>& curr, vector<vector<int>>& ans, vector<int>& nums, int n) {
+        if (idx >= n) {                // Base case
+            ans.push_back(curr);
+            return;
+        }
+
+        // Include current element
+        curr.push_back(nums[idx]);
+        subset(idx + 1, curr, ans, nums, n);
+
+        // Exclude current element
+        curr.pop_back();
+        subset(idx + 1, curr, ans, nums, n);
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> curr;
+        int n = nums.size();
+        subset(0, curr, ans, nums, n);
+        return ans;
+    }
+};

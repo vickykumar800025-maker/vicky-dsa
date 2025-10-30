@@ -59,3 +59,35 @@ public:
         return ans;
     }
 };
+
+
+🧠 Understanding the “for loop” version of Subset Generation
+
+In this version, recursion explores choices ahead using a loop —
+it says:
+“At each level, pick one element and move forward to build subsets starting from it.”
+It’s like saying:
+“I’ll fix one element, then recursively find all subsets starting after it.”
+
+
+class Solution {
+public:
+    void helper(int start, vector<int>& curr, vector<vector<int>>& ans, vector<int>& nums) {
+        // Always push current subset (every path is a valid subset)
+        ans.push_back(curr);
+
+        // Explore all choices starting from 'start'
+        for (int i = start; i < nums.size(); i++) {
+            curr.push_back(nums[i]);          // include current element
+            helper(i + 1, curr, ans, nums);   // move forward
+            curr.pop_back();                  // backtrack to explore next choice
+        }
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> curr;
+        helper(0, curr, ans, nums);
+        return ans;
+    }
+};

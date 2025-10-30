@@ -1,0 +1,34 @@
+📖 The Story of Factorial (n!)
+
+🧩 The Three Elements of the Recursion Story
+
+1️⃣ Base Case (The Ending)
+When the story is simple enough to end on its own.
+If n == 1, we already know the answer:
+No more calls are needed — that’s the moment we stop.
+
+2️⃣ Recursive Step (The Chapter Progression)
+For any n > 1, we say:
+“I’ll trust you, recursion. You find the factorial of (n−1), and I’ll just multiply it by n.”
+So we write:
+return n * factorial(n-1);
+Each call breaks the problem down one step smaller.
+
+3️⃣ Leap of Faith (The Trust)
+We don’t worry about how factorial(n-1) works —
+we simply believe that recursion will handle it and give the correct result.
+Our job is just to multiply our current n with that trusted result.
+
+⚙️ Complexity (in simple words)
+Time Complexity: O(n) — because the function runs once for each number from n down to 1.
+Space Complexity: O(n) — because each call is stored in memory until the base case finishes.
+
+💡 Key Takeaway
+Recursion isn’t about repeating code —
+it’s about trusting the process and breaking the problem into smaller, familiar parts.
+In factorial, every call trusts the next one — until the simplest one (base case) gives the answer back.
+
+int factorial(int n){
+    if(n==1) return 1;
+    return n*factorial(n-1);
+}

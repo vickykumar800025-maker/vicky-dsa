@@ -1,0 +1,37 @@
+📖 The Story of Fibonacci
+
+Goal:
+Find the nth Fibonacci number.
+The Fibonacci sequence looks like:
+0, 1, 1, 2, 3, 5, 8, 13, ...
+Each number is the sum of the two before it.
+
+Mathematically:
+fib(n) = fib(n-1) + fib(n-2)
+
+🧩 The Three Parts of the Recursion Story
+
+1️⃣ Base Case (The Ending)
+When the story is so small that the answer is already known:
+if n == 0 → return 0  
+if n == 1 → return 1
+
+2️⃣ Recursive Step (The Chapter Progression)
+For any n > 1,
+“I’ll trust recursion to give me fib(n-1) and fib(n-2),
+then I’ll just add them together.”
+return fib(n-1) + fib(n-2);
+
+3️⃣ Leap of Faith (The Trust)
+We don’t manually calculate smaller Fibonacci numbers —
+we trust recursion to handle them and give the right answers.
+
+⚙️ Complexity
+Time Complexity: O(2ⁿ) → because each call makes two more calls.
+Space Complexity: O(n) → due to the recursive call stack.
+
+int fib(int n) {
+    if (n == 0 || n == 1)
+        return n;           // base case
+    return fib(n-1) + fib(n-2);  // recursive step
+}

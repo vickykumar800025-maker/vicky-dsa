@@ -10,6 +10,18 @@ Use a boolean used[] array to track which indices are already part of the curren
 At every recursive step:
 Skip any element already used.
 Skip a duplicate element if it’s the same as the previous and the previous is not yet used (!used[i-1]).
+
+🔍 Why this works:
+Let’s say your sorted array is:
+nums = [1, 1, 2]
+indexes: 0  1  2
+Now — both nums[0] and nums[1] are 1.
+We only want unique permutations, not duplicates like [1,1,2] twice.
+When generating permutations:
+At the beginning, we want to use the first 1 before the second 1.
+So, if the previous identical element (nums[i-1]) hasn’t been used,
+that means we’re trying to use the later duplicate first — which would create a duplicate permutation.
+
 When the current permutation’s length equals nums.size(), add it to the result.
 Backtrack by removing the last added element and marking it unused again.
 

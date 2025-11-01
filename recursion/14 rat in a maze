@@ -1,0 +1,75 @@
+🧩 Rat in a Maze Problem
+
+A rat is placed at the top-left cell (0, 0) of an n x n maze filled with 1s and 0s.
+1 → open cell (can move)
+0 → blocked cell (cannot move)
+The rat can move Up (U), Down (D), Left (L), or Right (R) — but cannot visit the same cell twice in a path.
+Your task is to find all possible paths to reach the bottom-right cell (n-1, n-1).
+Return all paths in any order.
+
+🧠 Logic (Easy Explanation)
+
+Start from (0,0) and explore all 4 directions (D, U, R, L).
+Only move if the cell is inside the maze and has value 1.
+Mark the current cell as visited (0) before moving, and unmark (1) when backtracking.
+When you reach the destination (n-1, n-1), store the current path string.
+Use recursion + backtracking to explore all routes safely.
+
+⏱️ Time Complexity
+
+O(4^(n*n)) → Each cell can explore 4 directions.
+Worst case (all 1’s): explore all possible paths.
+
+💾 Space Complexity
+O(n²) for recursion stack and visited path tracking.
+
+class Solution {
+public:
+    void solve(int i, int j, string &path, vector<vector<int>> &maze, vector<string> &ans, int n) {
+        // Out of boundary or blocked cell
+        if (i < 0 || j < 0 || i >= n || j >= n || maze[i][j] == 0)
+            return;
+
+        // Destination reached
+        if (i == n - 1 && j == n - 1) {
+            ans.push_back(path);
+            return;
+        }
+
+        // Mark current cell as visited
+        maze[i][j] = 0;
+
+        // Move Down
+        path.push_back('D');
+        solve(i + 1, j, path, maze, ans, n);
+        path.pop_back();
+
+        // Move Up
+        path.push_back('U');
+        solve(i - 1, j, path, maze, ans, n);
+        path.pop_back();
+
+        // Move Right
+        path.push_back('R');
+        solve(i, j + 1, path, maze, ans, n);
+        path.pop_back();
+
+        // Move Left
+        path.push_back('L');
+        solve(i, j - 1, path, maze, ans, n);
+        path.pop_back();
+
+        // Unmark cell (backtrack)
+        maze[i][j] = 1;
+    }
+
+    vector<string> findPath(vector<vector<int>> &maze) {
+        vector<string> ans;
+        string path = "";
+        int n = maze.size();
+
+        if (maze[0][0] == 0) return ans; // if starting cell is blocked
+        solve(0, 0, path, maze, ans, n);
+        return ans;
+    }
+};

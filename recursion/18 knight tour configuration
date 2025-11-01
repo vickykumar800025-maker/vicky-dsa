@@ -1,0 +1,97 @@
+♞ Knight’s Tour Configuration — Notes
+🧩 Problem Description:
+
+You are given an n x n chessboard containing integers from 0 to n² - 1.
+Each cell represents the step number of a knight’s move.
+
+Starting from cell (0,0) (which should contain 0),
+you must check whether this configuration forms a valid knight’s tour —
+meaning the knight can move legally from one number to the next (0 → 1 → 2 → ... → n²−1).
+
+💡 Intuition:
+
+A knight in chess moves in an “L” shape — two steps in one direction and one in the perpendicular direction.
+That gives 8 possible moves from any cell.
+To verify a valid tour:
+Start at (0,0) which must have 0.
+Recursively check whether you can reach the cell that contains the next number (idx + 1) using valid knight moves.
+Continue until you reach the final number n² − 1.
+If all positions are valid, return true.
+
+⚙️ Approach (Recursive Backtracking)
+
+Base Case:
+
+If the current position is outside the board or the value doesn’t match the expected idx, return false.
+If idx == target (n² − 1), return true — we reached the end successfully.
+
+Recursive Case:
+
+From the current cell, explore all 8 possible knight moves:
+
+(-2, -1), (-2, +1),
+(-1, -2), (-1, +2),
+(+1, -2), (+1, +2),
+(+2, -1), (+2, +1)
+
+
+For each move, call the recursive function for idx + 1.
+If any path returns true, the configuration is valid.
+
+🧠 Why newRow and newCol are used
+
+We use temporary variables to store new positions instead of changing row and col directly —
+because each recursive call should explore a separate path independently.
+
+🕒 Time Complexity:
+
+O(8ⁿ) in the worst case
+(because from each position we can explore up to 8 directions recursively)
+
+💾 Space Complexity:
+O(n²) — for recursion depth and the chessboard storage.
+
+🚀 Key Takeaways for Future:
+
+When exploring grid-based problems, always check bounds and conditions first.
+Use temporary coordinates (newRow, newCol) to avoid overwriting current state.
+Knight’s moves are a good example of backtracking on non-linear movement.
+Always confirm base conditions to prevent infinite recursion.
+
+class Solution {
+public:
+    bool solve(int row, int col, int n, int idx, int target,
+               vector<pair<int,int>>& direction, vector<vector<int>>& grid) {
+
+        // Base condition
+        if (row < 0 || row >= n || col < 0 || col >= n || grid[row][col] != idx)
+            return false;
+
+        if (idx == target)
+            return true;
+
+        // Explore 8 possible knight moves
+        for (int i = 0; i < 8; i++) {
+            int newRow = row + direction[i].first;
+            int newCol = col + direction[i].second;
+            if (solve(newRow, newCol, n, idx + 1, target, direction, grid))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool checkValidGrid(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int target = (n * n) - 1;
+        int idx = 0;
+
+        // 8 knight moves
+        vector<pair<int,int>> direction = { 
+            {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+            {1, -2}, {1, 2}, {2, -1}, {2, 1}
+        };
+
+        return solve(0, 0, n, idx, target, direction, grid);
+    }
+};

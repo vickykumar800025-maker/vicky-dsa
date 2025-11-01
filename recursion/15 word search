@@ -1,0 +1,58 @@
+🔤 Word Search – Recursion + Backtracking
+📘 Problem Description
+
+You are given a 2D grid of characters board and a string word.
+You need to determine if the word exists in the grid.
+The word can be constructed from letters of sequentially adjacent cells,
+where adjacent cells are those horizontally or vertically neighboring.
+The same letter cell cannot be used more than once in a single word path.
+
+🧠 Logic (Simple Explanation)
+
+Start from every cell that matches the first letter of the word.
+From that cell, try to explore up, down, left, and right recursively.
+Mark the current cell as visited (e.g., replace it with '#') to avoid reuse.
+Continue matching next characters in the word.
+If you reach the end of the word (idx == word.length()), return true.
+If none of the paths work, backtrack — restore the original character.
+If any recursive path returns true, the word exists in the grid.
+
+⏱️ Time Complexity
+
+O(m × n × 4^L)
+m × n → starting points.
+4^L → explore 4 directions for each character of word of length L.
+
+💾 Space Complexity
+O(L) — recursion stack (depth equals length of the word).
+
+class Solution {
+public:
+    bool solve(int i, int j, int idx, int m, int n, vector<vector<char>>& board, string &word) {
+        if (idx == word.length()) return true;
+        if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != word[idx]) return false;
+
+        char temp = board[i][j];
+        board[i][j] = '#'; // mark visited
+
+        // explore all four directions
+        if (solve(i + 1, j, idx + 1, m, n, board, word)) return true; // down
+        if (solve(i - 1, j, idx + 1, m, n, board, word)) return true; // up
+        if (solve(i, j + 1, idx + 1, m, n, board, word)) return true; // right
+        if (solve(i, j - 1, idx + 1, m, n, board, word)) return true; // left
+
+        board[i][j] = temp; // backtrack (unmark)
+        return false;
+    }
+
+    bool exist(vector<vector<char>>& board, string word) {
+        int m = board.size(), n = board[0].size();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == word[0] && solve(i, j, 0, m, n, board, word))
+                    return true;
+            }
+        }
+        return false;
+    }
+};

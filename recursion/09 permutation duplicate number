@@ -64,3 +64,23 @@ public:
         return ans;
     }
 };
+
+! important 
+🔹 Handling Duplicates in Backtracking
+
+1️⃣ Combination / Subset (order doesn’t matter)
+
+if (i > start && nums[i] == nums[i - 1]) continue;
+→ Skip duplicates appearing at the same recursion level.
+→ Ensures unique combinations like [1,2], not [1,2] & [2,1].
+
+2️⃣ Permutation (order matters)
+
+if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
+→ Allow a duplicate only if its previous copy is already used.
+→ Prevents duplicate permutations caused by swapping identical values.
+
+Summary:
+
+Combination: skip same value at same level.
+Permutation: skip same value if previous duplicate not used yet.

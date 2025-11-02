@@ -79,6 +79,7 @@ if (i > start && nums[i] == nums[i - 1]) continue;
 if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
 → Allow a duplicate only if its previous copy is already used.
 → Prevents duplicate permutations caused by swapping identical values.
+we are using the !used[i-1] because every time we are running the loop from the 0
 
 Summary:
 

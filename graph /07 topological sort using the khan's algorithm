@@ -1,0 +1,70 @@
+Topological Sort – Kahn’s Algorithm (BFS)
+
+🔹 Intuition
+
+Topological sorting means ordering tasks (nodes) so that for every directed edge u → v,
+node u comes before node v in the final order.
+Kahn’s Algorithm is a BFS-based approach that uses the concept of in-degree —
+(the number of incoming edges to a node).
+If a node’s in-degree = 0, it has no dependencies, so it can safely appear first.
+
+⚙️ Approach
+
+Calculate In-Degree
+For each node, count how many edges point to it.
+Push All Nodes with In-Degree = 0 into a Queue
+These nodes can be processed first.
+
+Process Queue (BFS)
+Pop a node → add it to the result.
+Decrease the in-degree of all its neighbors.
+If any neighbor’s in-degree becomes 0 → push it to the queue.
+Repeat until the queue becomes empty.
+The final order is the topological sort.
+
+Extra Tip
+
+You can also use this algorithm to detect cycles:
+If the size of the topological order < total number of vertices →
+the graph has a cycle.
+
+Complexity Analysis
+Total Time Complexity: O(V + E)
+Space Complexity: O(V + E)
+→ For inDegree[], queue, adjacency list, and result.
+
+vector<int> topoSort(int V, vector<int> adj[]) {
+    vector<int> inDegree(V, 0);
+
+    // Step 1: Calculate in-degree for all nodes
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < adj[i].size(); j++) {
+            int neighbor = adj[i][j];
+            inDegree[neighbor]++;
+        }
+    }
+
+    // Step 2: Add all nodes with 0 in-degree to the queue
+    queue<int> q;
+    for (int i = 0; i < V; i++) {
+        if (inDegree[i] == 0) q.push(i);
+    }
+
+    // Step 3: BFS traversal
+    vector<int> topoOrder;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        topoOrder.push_back(node);
+
+        for (int j = 0; j < adj[node].size(); j++) {
+            int neighbor = adj[node][j];
+            inDegree[neighbor]--;
+            if (inDegree[neighbor] == 0) {
+                q.push(neighbor);
+            }
+        }
+    }
+
+    return topoOrder;
+}

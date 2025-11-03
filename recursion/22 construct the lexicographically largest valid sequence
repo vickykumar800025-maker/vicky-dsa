@@ -1,0 +1,69 @@
+🧩 Construct the Lexicographically Largest Valid Sequence
+🧠 Problem Summary
+
+Given an integer n, build a sequence of length (2 * n) - 1 using numbers from 1 to n such that:
+
+1 appears once.
+Each number from 2 to n appears twice.
+The distance between the two same numbers i is exactly i.
+Among all valid sequences, return the lexicographically largest one.
+
+⚙️ Approach (Backtracking)
+Use backtracking to fill the sequence one position at a time.
+Start from index 0.
+If already filled, move to next index.
+For each position, try placing numbers from n → 1
+(so the result is lexicographically largest).
+
+For number i:
+If i == 1, it can be placed only once.
+If i > 1, check if position idx + i is valid and empty.
+Place both ans[idx] and ans[idx + i] as i.
+Mark numbers as used to avoid reusing.
+When all positions are filled, store the valid sequence.
+
+⏱️ Complexity
+
+Time: O(n!) (due to backtracking and placement checks)
+Space: O(n) (for recursion stack and used array)
+
+✅ Key Insight
+Placing numbers from largest to smallest ensures we get the lexicographically largest sequence possible.
+
+class Solution {
+public:
+    bool solve(int idx, int n, vector<int>& ans, vector<bool>& used) {
+        // If we've filled all positions, solution found
+        if (idx == ans.size()) return true;
+
+        // If current position already filled, move forward
+        if (ans[idx] != -1) return solve(idx + 1, n, ans, used);
+
+        // Try placing numbers from n → 1 (for lexicographically largest)
+        for (int i = n; i >= 1; i--) {
+            if (used[i]) continue;
+
+            if (i == 1) { // 1 appears once
+                ans[idx] = 1;
+                used[i] = true;
+                if (solve(idx + 1, n, ans, used)) return true;
+                ans[idx] = -1;
+                used[i] = false;
+            } else if (idx + i < ans.size() && ans[idx + i] == -1) {
+                ans[idx] = ans[idx + i] = i;
+                used[i] = true;
+                if (solve(idx + 1, n, ans, used)) return true;
+                ans[idx] = ans[idx + i] = -1;
+                used[i] = false;
+            }
+        }
+        return false;
+    }
+
+    vector<int> constructDistancedSequence(int n) {
+        vector<int> ans((2 * n) - 1, -1);
+        vector<bool> used(n + 1, false);
+        solve(0, n, ans, used);
+        return ans;
+    }
+};

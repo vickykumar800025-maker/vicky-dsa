@@ -1,0 +1,69 @@
+🔹 Letter Combinations of a Phone Number
+
+Problem:
+You are given a string of digits from 2 to 9.
+Each digit represents some letters (like on a phone keypad).
+You need to return all possible combinations of letters that the digits can make.
+
+Example:
+digits = "23" → ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+🧠 Approach (Easy Explanation)
+
+We use backtracking to try every possible letter for each digit.
+Think of it like typing on an old phone:
+Each number key gives you a few letters.
+You press one key at a time and try all possible letter choices.
+Here’s how the code works step by step 👇
+Make a mapping from digits to letters:
+
+Start from the first digit.
+For that digit, take each possible letter and:
+Add it to your current string (curr).
+Move to the next digit and repeat the same process.
+
+
+When you have used all digits (reached the end),
+→ one full combination is ready → add it to the answer list.
+Backtrack: remove the last letter and try the next one.
+
+Complexity
+
+Time: O(4ⁿ) — each digit has up to 4 possible letters
+Space: O(n) for recursion + O(n) for the current string
+
+class Solution {
+public:
+    void solve(int idx , string &curr , vector<string>&ans , unordered_map<char,string>&mp ,string &digits){
+
+        if(idx>=digits.length()){
+            ans.push_back(curr);
+            return ;
+        }
+
+        char ch = digits[idx];
+        string s = mp[ch];
+
+        for(int i = 0 ; i < s.length() ; i++){
+            curr.push_back(s[i]);
+            solve(idx+1,curr,ans,mp,digits);
+            curr.pop_back();
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        vector<string>ans;
+        string curr = "";
+        unordered_map<char,string>mp;
+        mp['2'] = "abc";
+        mp['3'] = "def";
+        mp['4'] = "ghi";
+        mp['5'] = "jkl";
+        mp['6'] = "mno";
+        mp['7'] = "pqrs";
+        mp['8'] = "tuv";
+        mp['9'] = "wxyz";
+
+        solve(0,curr,ans,mp,digits);
+        return ans;
+    }
+};

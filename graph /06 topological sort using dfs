@@ -1,0 +1,72 @@
+Topological Sort (Using DFS)
+
+🔹 Problem Summary
+
+Topological sorting is used to order the vertices of a Directed Acyclic Graph (DAG) such that:
+For every directed edge u → v, node u appears before v in the ordering.
+
+🧠 Intuition
+
+We use Depth First Search (DFS) and a stack to ensure that:
+All neighbors (dependencies) of a node are processed before the node itself.
+Once a node’s DFS is done, we push it into the stack.
+Reversing the stack gives a valid topological order.
+This works because nodes are added after exploring all their dependent nodes.
+
+⚙️ Approach
+
+Perform DFS for all unvisited nodes.
+Keep track of visited nodes using visited[].
+
+During DFS:
+
+Mark node as visited.
+Visit all unvisited neighbors.
+Push the node into a stack after all its neighbors are processed.
+Finally, pop all elements from the stack → gives topological order.
+
+🔑 Key Points
+
+Works only for Directed Acyclic Graphs (DAGs).
+Nodes are pushed after visiting all neighbors (postorder).
+The reversed stack gives a valid topological order.
+Commonly used in task scheduling, course prerequisites, and dependency resolution.
+
+⏱️ Complexity
+
+Time: O(V + E) (each node and edge visited once)
+Space: O(V) (recursion + stack)
+
+void dfs(int node, vector<int> &visited, stack<int> &st, vector<int> adj[]) {
+    visited[node] = 1;
+
+    for (int i = 0; i < adj[node].size(); i++) {
+        int neighbor = adj[node][i];
+        if (!visited[neighbor]) {
+            dfs(neighbor, visited, st, adj);
+        }
+    }
+
+    // Push the node after visiting all its neighbors
+    st.push(node);
+}
+
+vector<int> topoSort(int V, vector<int> adj[]) {
+    vector<int> visited(V, 0);
+    stack<int> st;
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs(i, visited, st, adj);
+        }
+    }
+
+    vector<int> topoOrder;
+    while (!st.empty()) {
+        topoOrder.push_back(st.top());
+        st.pop();
+    }
+
+    return topoOrder;
+}
+

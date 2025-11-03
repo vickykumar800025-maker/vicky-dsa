@@ -1,0 +1,58 @@
+Breadth First Search (BFS): Level Order Traversal 
+
+Key Concepts 
+• BFS is used to traverse a graph level-by-level (breadth-wise). 
+• It uses a Queue (FIFO) and a Visited Array to avoid re-visiting nodes. 
+
+Approach Summary 
+
+1. Initialize: 
+o queue<int> q → to hold nodes for BFS. 
+o visited[] → to mark nodes as visited. 
+
+2. Start from node 0: 
+o Mark it as visited: visited[0] = 1 
+o Push into queue: q.push(0) 
+
+3. While queue is not empty: 
+o Pop front node: node = q.front(); q.pop(); 
+o Add to result vector: bfs.push_back(node) 
+o For each unvisited neighbor of node: 
+▪ Mark visited. 
+▪ Push into queue. 
+
+4. Repeat until all reachable nodes are visited. 
+Time & Space Complexity 
+• Time: O(N + 2E) 
+o N = number of nodes 
+o 2E = total edges in undirected graph 
+• Space: O(N) 
+o For queue, visited array, and adjacency list (not counting input graph)
+
+ Note 
+• BFS always finds the shortest path (in terms of edges) in an unweighted graph. 
+• If the graph is disconnected, run BFS from all unvisited nodes. 
+
+vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+    vector<int> bfs;
+    vector<int> vis(V, 0);
+    queue<int> q;
+    vis[0] = 1;
+    q.push(0);
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        bfs.push_back(node);
+
+        // Using normal for loop instead of for-each
+        for (int i = 0; i < adj[node].size(); i++) {
+            int it = adj[node][i];
+            if (!vis[it]) {
+                vis[it] = 1;
+                q.push(it);
+            }
+        }
+    }
+    return bfs;
+}

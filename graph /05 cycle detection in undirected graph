@@ -1,0 +1,101 @@
+ Cycle Detection in Undirected Graph Using BFS 
+
+Intuition: 
+In an undirected graph, if you come across an already visited node that is not the parent, 
+then a cycle exists. 
+
+Thought Process: 
+1. We use BFS to traverse the graph. 
+2. Each node is stored along with its parent (i.e., where it came from). 
+3. For each adjacent node: 
+o If not visited → mark and push with current as parent. 
+o If already visited and not the parent → Cycle detected. 
+
+🧭 Complexity
+
+Time: O(V + E)
+Space: O(V)
+
+bool detectCycleBFS(vector<int> adj[], vector<int> &visited, int startNode) {
+    visited[startNode] = 1;
+    queue<pair<int, int>> q; // {currentNode, parentNode}
+    q.push({startNode, -1});
+
+    while (!q.empty()) {
+        int currentNode = q.front().first;
+        int parentNode = q.front().second;
+        q.pop();
+
+        for (int i = 0; i < adj[currentNode].size(); i++) {
+            int neighbor = adj[currentNode][i];
+
+            if (!visited[neighbor]) {
+                visited[neighbor] = 1;
+                q.push({neighbor, currentNode});
+            }
+            else if (neighbor != parentNode) {
+                // Found a visited node that's not the parent → cycle exists
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool isCycle(int vertices, vector<int> adj[]) {
+    vector<int> visited(vertices, 0);
+
+    for (int i = 0; i < vertices; i++) {
+        if (!visited[i]) {
+            if (detectCycleBFS(adj, visited, i))
+                return true;
+        }
+    }
+    return false;
+}
+
+
+Cycle Detection (DFS Approach)
+
+How It Works
+
+Start DFS from every unvisited node.
+Mark the current node as visited.
+Explore all its neighbors using recursion.
+If you visit a node that’s already visited and not the parent, it means a cycle exists.
+If DFS completes without finding such a node, there’s no cycle.
+
+🧭 Complexity
+
+Time: O(V + E)
+Space: O(V) recursion stack
+
+bool detectCycleDFS(int currentNode, int parentNode, vector<int> adj[], vector<int> &visited) {
+    visited[currentNode] = 1;
+
+    for (int i = 0; i < adj[currentNode].size(); i++) {
+        int neighbor = adj[currentNode][i];
+
+        if (!visited[neighbor]) {
+            if (detectCycleDFS(neighbor, currentNode, adj, visited))
+                return true;
+        }
+        else if (neighbor != parentNode) {
+            // Visited node that is not the parent → cycle exists
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isCycle(int vertices, vector<int> adj[]) {
+    vector<int> visited(vertices, 0);
+
+    for (int i = 0; i < vertices; i++) {
+        if (!visited[i]) {
+            if (detectCycleDFS(i, -1, adj, visited))
+                return true;
+        }
+    }
+    return false;
+}

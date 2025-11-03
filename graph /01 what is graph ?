@@ -1,0 +1,131 @@
+What is a Graph? 
+A graph is a non-linear data structure made of: 
+• Nodes (Vertices) – store data. 
+• Edges – connect pairs of nodes. 
+
+It is useful in real-life applications like maps, circuits, and social networks. 
+
+Types of Data Structures 
+• Linear – Array, Stack, Queue, Linked List (sequential). 
+• Non-linear – Tree, Graph. 
+
+Graph Terminology 
+• Vertex (Node): A point in the graph. 
+• Edge: A connection between two vertices. 
+• Directed Edge: Has a direction (from one node to another). 
+• Undirected Edge: No direction; two-way connection. 
+
+Types of Graphs 
+1. Undirected Graph: Edges have no direction. (u, v) = (v, u) 
+2. Directed Graph: Edges have direction. ⟨u, v⟩ ≠ ⟨v, u⟩ 
+3. Cyclic Graph: Contains at least one cycle. 
+4. Acyclic Graph: No cycles. 
+5. DAG (Directed Acyclic Graph): Directed and has no cycles. 
+6. Weighted Graph: Edges have weights/costs. 
+7. Unweighted Graph: Edges have no weights (assume weight = 1). 
+
+Graph Structure 
+• A graph doesn’t need to be closed or circular. 
+• Cycle: A path where the start and end node are the same. 
+• Tree: A type of graph with no cycles.
+
+Path in Graph 
+A path is a sequence of connected nodes: 
+• Nodes must be adjacent. 
+• No node should repeat. 
+• Example: 1 → 2 → 3 → 5 is a valid path. 
+
+Degree of Nodes 
+• Undirected Graph: 
+Degree = number of edges connected to a node. 
+Property: 
+Total Degree = 2 × Number of Edges 
+• Directed Graph: 
+o Indegree: Number of incoming edges. 
+o Outdegree: Number of outgoing edges. 
+
+Edge Weight 
+• Shows the cost of moving between two nodes. 
+• If not given, assume weight = 1. 
+• Example: In road maps, weight can be distance or time. 
+
+How to Identify a Graph Problem 
+Look for these patterns or hints in the problem description: 
+
+�
+� 1. Entities (Nodes) & Relationships (Edges) 
+• Clue: The problem involves objects/entities (cities, people, computers, rooms, islands, etc.) 
+and connections/relationships between them (roads, friendships, wires, paths). 
+• Examples: 
+o “There are N cities connected by M roads.” 
+o “Each person can follow others on a social network.” 
+o “You can go from room A to room B through a door.” 
+• ✅ Graph Detected: Each entity = node, each relation = edge. 
+
+�
+� 2. Movement or Traversal 
+• Clue: The problem involves moving from one entity to another and finding paths, distances, 
+or reachability. 
+• Keywords: 
+o “Find shortest path…” 
+o “Reach from X to Y…” 
+o “Number of steps to go from A to B…” 
+• Examples: 
+o “Find the shortest path from city A to city B.” 
+o “Is there a way to escape the maze?” 
+o “How many steps to convert word1 to word2?” 
+• ✅ Graph Detected: Movement suggests edges connecting nodes. 
+
+�
+� 3. Grid-Based Problems 
+• Clue: The problem gives a 2D grid or matrix and allows movement in certain directions 
+(up/down/left/right). 
+• Examples: 
+o “Find the number of islands in a grid.” 
+o “Can the rat reach the cheese?” 
+o “Find shortest path in maze.” 
+• ✅ Graph Detected: Each cell is a node, adjacent cells are edges. 
+
+�
+� 4. Dependencies or Order of Tasks 
+• Clue: There’s a sequence of tasks, and some must be done before others. 
+• Keywords: 
+o “Prerequisite…” 
+o “Before doing A, do B…” 
+o “Find valid order to complete all tasks…” 
+• Examples: 
+o “Course schedule with prerequisites.” 
+o “Task scheduling based on dependency.” 
+• ✅ Graph Detected: Directed graph (DAG); use topological sort. 
+
+�
+� 5. Connectivity Questions 
+• Clue: You're asked whether entities are connected or how many groups exist. 
+• Examples: 
+o “How many friend groups exist?” 
+o “Is the entire network connected?” 
+o “Find the number of provinces.” 
+• ✅ Graph Detected: Graph is often undirected; use BFS/DFS or Union-Find. 
+
+�
+� 6. Recursive or Repetitive Connections 
+• Clue: Things are connected recursively, or can keep connecting (chains). 
+• Examples: 
+o “A calls B, B calls C…” 
+o “Dominoes fall one after another.” 
+• ✅ Graph Detected: A chain of connected events suggests directed graph. 
+
+�
+� 7. Mention of “Neighbor”, “Adjacent”, or “Next” 
+• Clue: Items are linked by proximity or direct connections. 
+• Examples: 
+o “Each node has up to 4 neighbors.” 
+o “Find all adjacent rooms.” 
+• ✅ Graph Detected: Adjacent = connected = edge in graph.
+
+Final Tip: 
+
+If a problem talks about: 
+• Multiple items that are linked, connected, dependent, or navigable, and 
+• You need to search, count, or analyze their relationships 
+It’s a graph problem!

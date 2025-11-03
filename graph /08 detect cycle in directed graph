@@ -1,0 +1,111 @@
+🧩 Detect Cycle in Directed Graph (DAG Check)
+🔹 Intuition
+
+A Directed Acyclic Graph (DAG) should have no cycles.
+If there is a cycle, we can’t perform a valid topological sort because some nodes depend on each other in a loop.
+We can detect cycles in two ways:
+
+Using Kahn’s Algorithm (BFS)
+Using DFS with recursion stack
+
+🔸 1. Using Kahn’s Algorithm (BFS)
+
+Kahn’s Algorithm (used for topological sort) can also detect a cycle:
+It repeatedly removes nodes with in-degree = 0.
+If all nodes are processed → No Cycle
+If some nodes remain unprocessed (their in-degree never becomes 0) → Cycle Exists
+
+🔑 Key Points
+
+Works using in-degree and BFS traversal.
+If number of processed nodes < total nodes → Cycle Detected.
+If all nodes processed → No Cycle (graph is a DAG).
+
+⏱️ Complexity
+Time: O(V + E)
+Space: O(V + E)
+
+bool isCyclic(int V, vector<int> adj[]) {
+    vector<int> inDegree(V, 0);
+
+    // Step 1: Calculate in-degrees
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < adj[i].size(); j++) {
+            int neighbor = adj[i][j];
+            inDegree[neighbor]++;
+        }
+    }
+
+    // Step 2: Push nodes with 0 in-degree
+    queue<int> q;
+    for (int i = 0; i < V; i++) {
+        if (inDegree[i] == 0) q.push(i);
+    }
+
+    // Step 3: Process queue (similar to topological sort)
+    int count = 0;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        count++;
+
+        for (int j = 0; j < adj[node].size(); j++) {
+            int neighbor = adj[node][j];
+            inDegree[neighbor]--;
+            if (inDegree[neighbor] == 0)
+                q.push(neighbor);
+        }
+    }
+
+    // Step 4: If not all nodes processed → cycle exists
+    return (count != V);
+}
+
+
+Using DFS + Recursion Stack
+
+Use two arrays:
+visited[] → marks visited nodes
+pathVisited[] → tracks nodes in the current DFS path
+If during DFS we reach a node that is already in the current path, it means there’s a cycle.
+
+Key Points
+
+Uses DFS recursion and a pathVisited array.
+If a node is revisited within the same recursion path, a cycle exists.
+Works efficiently for directed graphs.
+
+bool dfsCycle(int node, vector<int> adj[], vector<int> &visited, vector<int> &pathVisited) {
+    visited[node] = 1;
+    pathVisited[node] = 1;
+
+    for (int i = 0; i < adj[node].size(); i++) {
+        int neighbor = adj[node][i];
+
+        // If neighbor not visited, do DFS
+        if (!visited[neighbor]) {
+            if (dfsCycle(neighbor, adj, visited, pathVisited))
+                return true;
+        }
+        // If neighbor already in current path → cycle
+        else if (pathVisited[neighbor]) {
+            return true;
+        }
+    }
+
+    pathVisited[node] = 0; // backtrack
+    return false;
+}
+
+bool isCyclic(int V, vector<int> adj[]) {
+    vector<int> visited(V, 0);
+    vector<int> pathVisited(V, 0);
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            if (dfsCycle(i, adj, visited, pathVisited))
+                return true;
+        }
+    }
+    return false;
+}

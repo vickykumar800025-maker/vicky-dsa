@@ -1,0 +1,73 @@
+🔹 Increasing Subsequences (LeetCode 491)
+
+Problem:
+Given an integer array nums, return all different possible non-decreasing subsequences (length ≥ 2).
+You can return the answer in any order.
+
+🧠 Key Idea
+
+We use backtracking to build all possible subsequences that are non-decreasing.
+At each recursion level, we:
+Keep the current sequence in curr.
+Add it to ans when its size ≥ 2.
+For each index i, only:
+Choose nums[i] if it’s ≥ last element of curr (to keep non-decreasing order).
+Ensure nums[i] isn’t used again at the same recursion level using a set.
+
+💡 Why We Use set Instead of Sorting
+
+In problems like Subset II, we can sort the array first and then skip duplicates easily using:
+if (i > idx && nums[i] == nums[i - 1]) continue;
+
+
+But here we can’t sort, because sorting would change the original order, and we’d lose the increasing sequence property.
+So instead, we use a set inside each recursive call to avoid taking the same number twice at the same level:
+
+unordered_set<int> st;
+
+
+This ensures:
+
+No duplicate subsequences are formed.
+The relative order of elements stays the same.
+
+⏱️ Complexity
+
+Time: O(2ⁿ) (all subsequences)
+Space: O(n) recursion + O(n) for set
+
+🔍 Difference Summary
+                                    Problem	Can Sort?	                                                                      Duplicate Handling Condition
+Subset	✅                          Optional	                                                                              No duplicates	none
+Subset II	✅         	            Yes	Skip duplicates using if (i > idx && nums[i] == nums[i-1]) continue;                Order doesn’t matter
+Increasing Subsequences	❌ No	      Use unordered_set inside recursion	                                                    Order must remain non-decreasing
+
+
+class Solution {
+public:
+    void solve(int idx, int n, vector<int>& curr, vector<vector<int>>& ans, vector<int>& nums) {
+        if (curr.size() >= 2)
+            ans.push_back(curr);
+
+        unordered_set<int> st; // avoid duplicates at this recursion level
+
+        for (int i = idx; i < n; i++) {
+            if (st.find(nums[i]) == st.end()) {
+                if (curr.empty() || nums[i] >= curr.back()) {
+                    st.insert(nums[i]);
+                    curr.push_back(nums[i]);
+                    solve(i + 1, n, curr, ans, nums);
+                    curr.pop_back();
+                }
+            }
+        }
+    }
+
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans, curr;
+        solve(0, nums.size(), curr, ans, nums);
+        return ans;
+    }
+};
+
+

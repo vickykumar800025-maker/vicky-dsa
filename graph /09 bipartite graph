@@ -1,0 +1,90 @@
+🧩 Bipartite Graph (Using BFS & DFS)
+✅ Concept: What is a Bipartite Graph?
+
+A graph is bipartite if you can divide its nodes into two sets such that:
+No two adjacent nodes belong to the same set, OR
+You can color the graph using 2 colors (say 0 and 1) so that no two connected nodes share the same color.
+
+🔹 BFS-Based Coloring Approach
+
+🧠 Intuition
+
+We use BFS to color nodes alternately.
+If any adjacent nodes get the same color → the graph is not bipartite.
+
+⚙️ Algorithm
+
+Create a color[] array initialized with -1 (unvisited).
+For every unvisited node:
+Start BFS from that node, assign color 0.
+
+For each neighbor:
+If unvisited → assign opposite color (1 - parent_color) and push to queue.
+If already visited and has same color → not bipartite.
+If BFS completes without conflict → graph is bipartite.
+
+Complexity
+
+Time: O(V + E)
+Space: O(V) for color array + O(V) for queue
+
+bool bfsCheck(vector<int> adj[], vector<int> &color, int startNode) {
+    queue<int> q;
+    q.push(startNode);
+    color[startNode] = 0; // start with color 0
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        int parentColor = color[node];
+
+        for (int i = 0; i < adj[node].size(); i++) {
+            int neighbor = adj[node][i];
+
+            if (color[neighbor] == -1) {
+                color[neighbor] = 1 - parentColor;
+                q.push(neighbor);
+            }
+            else if (color[neighbor] == parentColor) {
+                return false; // conflict → not bipartite
+            }
+        }
+    }
+    return true;
+}
+
+DFS-Based Coloring Approach
+🧠 Intuition
+
+We use DFS to color the graph recursively.
+If we find an adjacent node with the same color, the graph is not bipartite.
+
+Complexity
+
+Time: O(V + E)
+Space: O(V) recursion stack + O(V) color array
+
+bool dfsCheck(vector<int> adj[], vector<int> &color, int node, int colorValue) {
+    color[node] = colorValue;
+
+    for (int i = 0; i < adj[node].size(); i++) {
+        int neighbor = adj[node][i];
+
+        if (color[neighbor] == -1) {
+            // Recursive DFS call with alternate color
+            if (!dfsCheck(adj, color, neighbor, 1 - colorValue))
+                return false;
+        }
+        else if (color[neighbor] == colorValue) {
+            // Conflict → not bipartite
+            return false;
+        }
+    }
+    return true;
+}
+
+Key Points
+
+Works for both connected and disconnected graphs.
+A graph is not bipartite if it contains an odd-length cycle.
+Use BFS for iterative solution or DFS for recursive one.

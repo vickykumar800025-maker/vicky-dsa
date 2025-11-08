@@ -1,0 +1,51 @@
+🧩 Shortest Path in an Unweighted (Undirected) Graph
+🔹 Concept
+
+In an unweighted graph, all edges have equal weight (cost = 1).
+The shortest path from a source node to all other nodes can be found using BFS (Breadth First Search) because BFS explores nodes level by level, ensuring the shortest distance first.
+
+⚙️ Steps
+
+Create a distance array (dist) and set all values to -1 (unvisited).
+Mark the source node as visited and set dist[src] = 0.
+Use a queue for BFS traversal.
+For each node popped from the queue:
+For every unvisited neighbor →
+update dist[neighbor] = dist[node] + 1,
+mark as visited, and push into the queue.
+
+After BFS completes, dist[i] holds the shortest distance from the source to node i.
+
+⏱️ Complexity
+Time: O(V + E)
+Space: O(V)
+
+class Solution {
+public:
+    vector<int> shortestPath(vector<vector<int>> &adj, int src) {
+        int v = adj.size();
+        vector<int> dist(v, -1);
+        vector<bool> visited(v, false);
+
+        queue<int> q;
+        q.push(src);
+        visited[src] = true;
+        dist[src] = 0;
+
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            for (int i = 0; i < adj[node].size(); i++) {
+                int neighbor = adj[node][i];
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    dist[neighbor] = dist[node] + 1;
+                    q.push(neighbor);
+                }
+            }
+        }
+        return dist;
+    }
+};
+

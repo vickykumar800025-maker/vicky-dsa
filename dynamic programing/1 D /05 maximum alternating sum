@@ -1,0 +1,88 @@
+Maximum Alternating Sum (DP – index + flag)
+
+Think of it like this:
+
+You are walking through the array and at every index you must decide:
+
+✔ Should I pick this number?
+
+If you pick it when it’s your “add turn”, its value increases your sum.
+If you pick it when it’s your “subtract turn”, it decreases your sum.
+After picking, your turn switches (add → subtract or subtract → add).
+
+✔ Or should I skip it?
+
+Skipping keeps your turn the same.
+Sometimes skipping is better than subtracting a big number.
+This is exactly why DP is helpful:
+Your decision affects your future state
+You only need to track where you are and what sign (add/sub) is next
+
+🔹 DP State (Easy Meaning)
+
+We store answers for:
+dp[index][flag]
+
+
+Where:
+
+index → where we are in the array
+flag → what sign we must apply to the next number
+flag = 0 → next number will be added
+flag = 1 → next number will be subtracted
+This DP tells us:
+
+“What’s the best alternating sum we can get starting from this index and with this sign?”
+
+🔹 Base Thinking (When to Stop)
+
+If we go past the last index
+We add nothing
+So result is 0
+(meaning: no more choices left)
+
+🔹 Time & Space Complexity
+
+Time: O(n)
+Space: O(n) due to DP table
+(Can be optimized to constant space)
+
+🔹 Key Takeaways for Future Problems
+
+This is a “take or skip” DP just like House Robber.
+Only difference: taking flips your “mode” → add/subtract.
+Whenever your decision affects future formula rules, track it with a flag.
+Memoization is great when the same (index, state) repeats.
+Many DP problems boil down to:
+
+“At each position choose the best between picking and not picking.”
+
+class Solution {
+public:
+    long long t[1000000][2];
+
+    long long solve(int idx, int flag, int n, vector<int>& nums) {
+
+        if (idx >= n) return 0;
+
+        if (t[idx][flag] != -1)  
+            return t[idx][flag];
+
+        // Skip the current element
+        long long skip = solve(idx + 1, flag, n, nums);
+
+        // Take the current element (alternating sign based on flag)
+        long long val = nums[idx];
+        if (flag == 1) val = -val;
+
+        long long take = val + solve(idx + 1, 1 - flag, n, nums);
+
+        return t[idx][flag] = max(skip, take);
+    }
+
+    long long maxAlternatingSum(vector<int>& nums) {
+        int n = nums.size();
+        memset(t, -1, sizeof(t));    // fill DP with -1
+        return solve(0, 0, n, nums); // 0 → even index (start with plus)
+    }
+};

@@ -1,0 +1,69 @@
+Climbing Stairs
+
+You want to climb to step n, and at each move you can take either 1 step or 2 steps.
+So the number of ways to reach step n depends on:
+
+From step n-1, taking 1 step
+From step n-2, taking 2 steps
+
+This gives us the relation:
+ways(n) = ways(n-1) + ways(n-2)
+
+This is the same structure as Fibonacci.
+But recursion alone repeats the same calculations many times.
+
+So we use memoization:
+Before calculating solve(n), check if we already computed it.
+If yes → return immediately.
+If no → compute once, save it, and reuse.
+This removes duplicate work and makes the solution fast (O(n)).
+
+In short:
+“To reach step n, you must come from (n−1) or (n−2).
+Count both. Store answers so you don’t re-calc again.”
+
+🔍 Pattern Recognition
+
+Climbing Stairs belongs to the Fibonacci-style DP pattern:
+Current state depends on previous two states
+Overlapping subproblems
+Simple recurrence
+Perfect fit for 1D DP + memoization
+
+Whenever you see:
+“ways to reach position X”
+“you can move 1 or 2 units”
+A recurrence like f(n)=f(n-1)+f(n-2)
+→ It is a 1D DP problem.
+
+class Solution {
+public:
+    int t[46];  // DP array to store result for each step
+
+    // Function to compute number of ways to climb n steps
+    int solve(int n) {
+
+        // If n becomes negative, no valid way
+        if (n < 0) return 0;
+
+        // If n==0, one valid way (we are already at the top)
+        if (n == 0) return 1;
+
+        // If already computed, return stored answer
+        if (t[n] != -1) return t[n];
+
+        // Option 1: take 1 step from (n-1)
+        int one_step = solve(n - 1);
+
+        // Option 2: take 2 steps from (n-2)
+        int two_step = solve(n - 2);
+
+        // Total ways = ways from (n-1) + ways from (n-2)
+        return t[n] = one_step + two_step;
+    }
+
+    int climbStairs(int n) {
+        memset(t, -1, sizeof(t));  // Initialize DP array
+        return solve(n);
+    }
+};

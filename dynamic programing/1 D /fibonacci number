@@ -1,0 +1,60 @@
+Fibonacci Number
+
+Fibonacci looks easy at first because
+F(n) = F(n-1) + F(n-2).
+
+But in pure recursion, every time you ask for F(n-1), it again asks for F(n-2) and F(n-3), and those again ask for more…
+This creates a huge tree of repeated work.
+
+Example:
+To compute F(5), the value F(3) gets calculated multiple times unnecessarily.
+
+So the idea of DP is:
+⭐ “If I’m solving the same subproblem again and again, why not solve it once and store the answer?”
+
+That is exactly what memoization does:
+
+Before solving solve(n), check if the answer is already saved in t[n].
+If yes → directly return it (instant).
+If no → compute it once, store it, and reuse it next time.
+This removes repeated calculations and turns the solution from exponential time to linear time.
+
+DP says:
+“Remember your previous work so you don’t repeat it again.”
+
+🧩 Pattern Recognition 
+
+This Fibonacci problem belongs to the category:
+👉 DP where the current value depends on previous values
+Examples:
+
+Climbing Stairs
+House Robber (depends on previous two states)
+Tiling Problems
+Tribonacci
+
+class Solution {
+public:
+    int t[31];   // DP array to store results (memoization)
+
+    // Recursive function to calculate Fibonacci with memoization
+    int solve(int n) {
+
+        // Base cases
+        if (n <= 1) return n;
+
+        // If already calculated, return stored result (avoids recomputation)
+        if (t[n] != -1) return t[n];
+
+        // Store and return the result of the recurrence
+        return t[n] = solve(n - 1) + solve(n - 2);
+    }
+
+    int fib(int n) {
+        // Initialize DP array with -1 (means: not calculated yet)
+        memset(t, -1, sizeof(t));
+
+        // Start solving
+        return solve(n);
+    }
+};

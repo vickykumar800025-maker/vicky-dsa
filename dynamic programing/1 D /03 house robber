@@ -1,0 +1,95 @@
+House Robber
+
+You have a row of houses, each with some amount of money.
+But you cannot rob two adjacent houses, otherwise the alarm triggers.
+So at each house (index idx), you have two choices:
+
+1️⃣ Rob this house
+
+You take nums[idx]
+But you must skip the next house
+→ next index becomes idx + 2
+
+2️⃣ Do NOT rob this house
+
+You skip current
+Move to the next house
+→ next index becomes idx + 1
+
+So the recurrence is:
+max money from idx  
+= max( rob current + solve(idx+2), skip current + solve(idx+1) )
+
+
+This creates overlapping subproblems, because solve(idx+1) and solve(idx+2) get reused multiple times.
+
+Memoization idea:
+“Before calculating solve(idx), check if we already solved it.
+If yes, return the stored value immediately.”
+This reduces time complexity from exponential to O(n).
+
+🔍 Pattern Recognition
+
+House Robber follows the choice-based DP pattern:
+You choose between taking or not taking something
+Choices lead to different next states
+Final answer is the maximum of these choices
+
+This pattern appears in:
+House Robber II
+Stickers to Spell Words
+Max sum of non-adjacent elements
+Weighted interval scheduling (harder version)
+
+Key sign:
+“You cannot pick adjacent items, and you want maximum value.”
+This almost always means 1D DP.
+
+📌 Key Points to Remember
+
+solve(idx) = maximum money starting from house idx.
+Two choices at each step: rob / not rob.
+Memoization avoids recomputing the same states.
+Base case: if idx >= n → no houses left → 0.
+
+Recurrence:
+dp[idx] = max( nums[idx] + dp[idx+2], dp[idx+1] )
+Time complexity: O(n)
+Uses simple 1D DP array.
+
+📝 Takeaways for the Future
+
+Many DP problems involve "take or skip" decisions.
+When skipping changes the next index (like +2), think DP on index.
+Recurrence comes naturally from exploring both choices.
+Memorization or tabulation makes these problems fast.
+
+class Solution {
+public:
+    int t[101];  // DP array for memoization
+
+    // Function to compute maximum money starting from house idx
+    int solve(int idx, int n, vector<int>& nums) {
+
+        // If index goes beyond last house → no money to take
+        if (idx >= n) return 0;
+
+        // If already solved, return stored value
+        if (t[idx] != -1) return t[idx];
+
+        // Option 1: Rob current house → skip next (idx+2)
+        int rob = nums[idx] + solve(idx + 2, n, nums);
+
+        // Option 2: Do not rob current → move to next (idx+1)
+        int not_rob = solve(idx + 1, n, nums);
+
+        // Best choice: max of rob vs not rob
+        return t[idx] = max(rob, not_rob);
+    }
+
+    int rob(vector<int>& nums) {
+        memset(t, -1, sizeof(t)); // initialize DP
+        int n = nums.size();
+        return solve(0, n, nums); // start from index 0
+    }
+};

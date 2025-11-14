@@ -1,0 +1,122 @@
+House Robber II (Circular Houses)
+
+This problem is the same as House Robber I,
+BUT there is one twist:
+Houses are arranged in a circle, so
+House 0 and House n-1 are adjacent.
+
+That means:
+If you rob the first house,
+you cannot rob the last house.
+If you rob the last house,
+you cannot rob the first house.
+
+So the trick is to break the problem into two linear cases:
+
+Case 1 → Take the first house (index 0)
+Then we must avoid the last house (index n−1):
+rob from houses [0 ... n-2]
+
+Case 2 → Skip the first house
+Then we are free to include the last house:
+rob from houses [1 ... n-1]
+
+After solving both:
+answer = max(case1, case2)
+
+We reuse the same logic from House Robber I,
+but apply it twice on two different ranges.
+
+In short:
+
+“Since first and last are connected, we try two linear robberies:
+one ignoring last house, one ignoring first.
+Return the best.”
+
+🔍 Pattern Recognition (Circular DP)
+
+House Robber II follows the circular DP pattern, identified by:
+✔ First and last elements are connected
+✔ Taking one option blocks another at the end
+✔ Split problem into two linear DP runs
+
+This pattern appears in:
+
+Circular array problems
+Circular scheduling
+Max non-adjacent elements in a ring
+
+Wherever:
+
+“Items are in a loop, can’t take both ends”
+you split into two cases.
+
+📌 Key Points to Remember
+Circular constraint makes the problem two DP runs.
+
+You choose:
+Rob from [0 … n-2]
+Rob from [1 … n-1]
+solve() is same as House Robber I (simple take/skip DP).
+
+Memoization needed because of repeated choices.
+
+Base case checks for size 0, 1, 2 are important:
+n = 1 → answer is nums[0]
+n = 2 → max(nums[0], nums[1])
+
+Time complexity: O(n)
+Space complexity: O(n)
+
+📝 Takeaways for the Future
+Circular problems often break into two simpler linear problems.
+
+Always ask:
+“What happens if I include the first element?”
+“What happens if I exclude it?”
+
+Reuse your DP logic from simpler versions.
+
+class Solution {
+public:
+    int t[101];
+
+    // Standard House Robber I logic (take or skip)
+    int solve(int idx, int n, vector<int>& nums) {
+
+        // No houses left in this range
+        if (idx >= n) return 0;
+
+        // Return cached value if already computed
+        if (t[idx] != -1) return t[idx];
+
+        // Option 1: Rob this house → skip the next one
+        int rob = nums[idx] + solve(idx + 2, n, nums);
+
+        // Option 2: Skip this house → move to next
+        int not_rob = solve(idx + 1, n, nums);
+
+        // Best answer at this index
+        return t[idx] = max(rob, not_rob);
+    }
+
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+
+        // Edge cases
+        if (n == 0) return 0;
+        if (n == 1) return nums[0];
+        if (n == 2) return max(nums[0], nums[1]);
+
+        // CASE 1: Include first house → only consider [0 ... n-2]
+        memset(t, -1, sizeof(t));
+        int take_first = solve(0, n - 1, nums);
+
+        // CASE 2: Exclude first house → consider [1 ... n-1]
+        memset(t, -1, sizeof(t));
+        int skip_first = solve(1, n, nums);
+
+        // Choose the best of the two cases
+        return max(take_first, skip_first);
+    }
+};

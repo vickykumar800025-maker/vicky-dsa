@@ -1,0 +1,82 @@
+Maximum length of chai pair 
+
+You are given pairs like:
+[a, b], [c, d], ...
+A pair (c, d) can follow (a, b) only if:
+c > b
+You must find the maximum number of pairs you can chain following this rule.
+
+This is a Take / Skip DP pattern, same as:
+LIS
+
+At index idx, you have two choices:
+
+✔ 1. TAKE the pair
+You can take the pair if:
+It’s the first pair, OR
+Its start is greater than the end of the last chosen pair (pairs[idx][0] > pairs[pre][1])
+If you take it → chain length increases by 1.
+
+✔ 2. SKIP the pair
+
+Move to next index without using this pair.
+✔ Best answer = max(take, skip)
+Because these choices repeat on overlapping subproblems, you store results in DP using:
+
+dp[pre+1][idx]
+(pre = -1 means no pair chosen yet)
+
+🧠 Key Takeaways
+
+Sort pairs by first value to check them in order.
+At each index, choose to TAKE or SKIP.
+Recursive choice + memoization avoids re-computation.
+pre = -1 means chain is empty.
+DP state (pre, idx) uniquely defines the subproblem.
+
+Key Points to Remember
+
+Always use pre + 1 for DP indexing because pre = -1 is a valid state.
+Sort pairs so you check them in increasing order.
+Use take / skip logic — same pattern as LIS.
+Recursion + memoization avoids exponential work.
+Result is the maximum chain length.
+
+class Solution {
+public:
+    int dp[1002][1002];
+
+    // sort pairs by first value, then by second
+    static bool cmp(const vector<int> &a, const vector<int> &b) {
+        if (a[0] == b[0]) return a[1] < b[1];
+        return a[0] < b[0];
+    }
+
+    int solve(int pre, int idx, vector<vector<int>>& pairs) {
+
+        // no more pairs
+        if (idx == pairs.size()) return 0;
+
+        // return memoized result
+        if (dp[pre + 1][idx] != -1)
+            return dp[pre + 1][idx];
+
+        int take = 0;
+
+        // allowed to take the pair
+        if (pre == -1 || pairs[idx][0] > pairs[pre][1]) {
+            take = 1 + solve(idx, idx + 1, pairs);
+        }
+
+        // option to skip
+        int skip = solve(pre, idx + 1, pairs);
+
+        return dp[pre + 1][idx] = max(take, skip);
+    }
+
+    int findLongestChain(vector<vector<int>>& pairs) {
+        memset(dp, -1, sizeof(dp));
+        sort(pairs.begin(), pairs.end(), cmp);
+        return solve(-1, 0, pairs);
+    }
+};

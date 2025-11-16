@@ -1,0 +1,104 @@
+Longest increasing subsequence 
+
+At every index, you have two choices:
+
+✔ 1. TAKE the current element
+You can only take it if it keeps the subsequence increasing, i.e.
+nums[idx] > nums[pre]
+(where pre is the index of the last taken element).
+
+✔ 2. SKIP the current element
+Move to the next element and try building LIS without the current value.
+Since this creates overlapping subproblems, we memoize using
+dp[pre+1][idx]
+(pre+1 because pre can be -1).
+
+You always return
+max(take, skip).
+
+That’s the entire logic.
+
+🧠 Key Takeaways
+
+pre = -1 means you haven’t chosen any element yet.
+Every element can either be part of LIS or not.
+Use recursion to simulate all possible subsequences.
+Memoization saves huge time by avoiding repeated states.
+State is uniquely defined by:
+(last picked index, current index) → (pre, idx)
+This is a classic choice-based DP pattern.
+
+🧩 DP State Meaning
+
+dp[pre+1][idx] = length of LIS starting from idx, when last taken element index = pre
+pre+1 handles the -1 case safely.
+
+📝 Key Points to Remember
+
+Always use pre + 1 in DP because pre = -1 is valid state.
+
+LIS is a choice DP: Take or Skip.
+
+The recursive state (pre, idx) is sufficient to define the problem.
+
+Memoization avoids exponential time.
+
+Result = maximum length you can form.
+
+⭐ Pattern Recognition (for future similar DP questions)
+
+Whenever you see:
+
+✔ “At each index, we can choose something or skip something”
+
+→ Use Take / Skip DP
+✔ “Future depends on what you chose last”
+→ Pass a parameter like pre, last, or a flag
+✔ “Constraints allow O(n²)”
+
+→ 2D DP (like dp[last][current]) likely works.
+
+✔ “Trying all subsequences / subsets”
+→ Use recursion + memoization.
+This same pattern applies to:
+
+LIS
+
+Longest Arithmetic Subsequence
+Longest Bitonic Subsequence
+Maximum Alternating Sum
+House Robber
+Subsequence DP problems
+
+class Solution {
+public:
+    int dp[2502][2502]; // dp[pre+1][idx]
+
+    int solve(int pre, int idx, vector<int>& nums) {
+
+        // reached end → no more elements
+        if (idx == nums.size()) return 0;
+
+        // use memo if already computed
+        if (dp[pre + 1][idx] != -1)
+            return dp[pre + 1][idx];
+
+        int take = 0;
+
+        // take current element if it's increasing
+        if (pre == -1 || nums[idx] > nums[pre]) {
+            take = 1 + solve(idx, idx + 1, nums);
+        }
+
+        // skip current element
+        int skip = solve(pre, idx + 1, nums);
+
+        // store and return best option
+        return dp[pre + 1][idx] = max(take, skip);
+    }
+
+    int lengthOfLIS(vector<int>& nums) {
+        memset(dp, -1, sizeof(dp));
+        return solve(-1, 0, nums);
+    }
+};

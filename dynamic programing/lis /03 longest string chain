@@ -1,0 +1,84 @@
+Longest string chain
+
+A string chain means:
+Each next word is formed by adding exactly one character anywhere in the previous word.
+Example: "a" → "ab" → "acb" → "acbd"
+Every step increases length by 1.
+
+✅ Goal
+Find the maximum number of words that can be chained using this rule.
+
+🧠 Intuition (simple + short)
+This problem is just like LIS, but instead of checking numbers increasing,
+we check whether one word can become the next by inserting exactly one character.
+
+So:
+Sort all words by length (short → long).
+Because shorter words can only lead to longer ones.
+
+At each index:
+You have two options:
+Take the current word (if it can extend the previous word).
+Skip the word.
+
+class Solution {
+public:
+    int t[1002][1002];
+
+    // Sort by length
+    static bool cmp(const string &a, const string &b){
+        return a.length() < b.length();
+    }
+
+    // Check if 'first' is a valid predecessor of 'second'
+    bool predecessor_check(const string &first, const string &second){
+        int n = first.length();
+        int m = second.length();
+
+        // must differ by exactly 1 character
+        if (m - n != 1) return false;
+
+        int i = 0, j = 0;
+        int mismatch = 0;
+
+        while (i < n && j < m) {
+            if (first[i] == second[j]) {
+                i++;
+                j++;
+            } else {
+                mismatch++;
+                j++;  // skip one extra char in second
+                if (mismatch > 1) return false;
+            }
+        }
+
+        return true;
+    }
+
+    int solve(int pre, int idx, int n, vector<string>& words) {
+
+        if (idx >= n) return 0;
+
+        if (t[pre+1][idx] != -1) 
+            return t[pre+1][idx];
+
+        int take = 0;
+
+        // if no previous OR predecessor matched
+        if (pre == -1 || predecessor_check(words[pre], words[idx])) {
+            take = 1 + solve(idx, idx + 1, n, words);
+        }
+
+        int skip = solve(pre, idx + 1, n, words);
+
+        return t[pre+1][idx] = max(take, skip);
+    }
+
+    int longestStrChain(vector<string>& words) {
+        sort(words.begin(), words.end(), cmp);
+        int n = words.size();
+
+        memset(t, -1, sizeof(t));
+        return solve(-1, 0, n, words);
+    }
+};

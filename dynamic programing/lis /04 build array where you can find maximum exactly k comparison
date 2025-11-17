@@ -1,0 +1,92 @@
+Build array where you can find maximum exactly k comparison
+
+You are building an array of size n, each number between 1 to m.
+A comparison cost increases whenever your new element becomes a new maximum.
+
+Example:
+Array = [2, 3, 1, 5]
+Maximum updates → 2 → 3 → 5 → cost = 3
+
+Goal:
+👉 Count how many arrays of size n have exactly K max-updates (search_cost).
+
+At each position in the array, you choose a value from 1 to m.
+
+Two things matter:
+
+What is the current maximum so far?
+This decides whether the next value increases the cost.
+How many max-updates have happened already?
+
+So for each new number we choose:
+If it is greater than current max,
+→ new maximum found → cost increases by 1
+
+Otherwise
+→ cost stays the same
+
+Choice at each step
+
+For each possible next value val from 1 to m:
+
+Case 1: val > max_so_far
+→ It becomes the new maximum
+→ cost increases
+→ next state:
+solve(idx+1, val, cost_so_far + 1)
+
+Case 2: val <= max_so_far
+→ No new max
+→ cost unchanged
+→ next state:
+solve(idx+1, max_so_far, cost_so_far)
+
+We sum both results.
+
+🧱 Base Case
+
+When idx == n:
+If we reached exactly k cost → valid array → return 1
+Otherwise → return 0
+
+class Solution {
+public:
+    int mod = 1e9+7;
+    int t[51][101][51];
+
+    int solve(int n, int m, int k, int idx, int max_ele, int search_cost){
+
+        if(search_cost > k) return 0;
+
+        if(idx == n){
+            return search_cost == k;
+        }
+
+        if(t[idx][max_ele][search_cost] != -1) 
+            return t[idx][max_ele][search_cost];
+
+        long long result = 0;
+
+        for(int val = 1; val <= m; val++){
+
+            if(val > max_ele){
+                // new maximum found
+                result += solve(n, m, k, idx+1, val, search_cost+1);
+            } else {
+                // no new max
+                result += solve(n, m, k, idx+1, max_ele, search_cost);
+            }
+
+            result %= mod;
+        }
+
+        return t[idx][max_ele][search_cost] = result;
+    }
+
+    int numOfArrays(int n, int m, int k) {
+        memset(t, -1, sizeof(t));
+        return solve(n, m, k, 0, 0, 0);
+    }
+};
+
+

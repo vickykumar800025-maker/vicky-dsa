@@ -1,0 +1,46 @@
+Maximum balance subsequence sum
+
+For any chosen indices i < j:
+(nums[j] - j) ≥ (nums[i] - i)
+
+This makes the subsequence balanced, because each next element does not violate the adjusted value rule.
+We want:
+👉 The maximum sum of such a subsequence.
+
+So at each index i, you have 2 choices:
+Take it (only if it respects the balanced condition with the previous chosen element)
+Skip it
+
+Using unordered_map makes the DP possible, fast, and memory-efficient — otherwise the problem cannot be solved with arrays.
+
+class Solution {
+public:
+    unordered_map<string, long long> mp; //For memoization
+    long long solve(int i, int prev, vector<int>& nums) {
+        if(i >= nums.size()) {
+            return 0;
+        }
+
+        string key = to_string(i) + "_" + to_string(prev);
+        if(mp.find(key) != mp.end()) {
+            return mp[key];
+        }
+
+        long long taken = INT_MIN;
+
+        if(prev == -1 || nums[i] - i >= nums[prev] - prev) {
+            taken = nums[i] + solve(i+1, i, nums);
+        }
+        
+        long long not_taken = solve(i+1, prev, nums);
+        return mp[key] = max<long long>(taken, not_taken);
+    }
+
+    long long maxBalancedSubsequenceSum(vector<int>& nums) {
+        int maxEl = *max_element(begin(nums), end(nums));
+        if(maxEl <= 0) {
+            return maxEl;
+        }
+        return solve(0, -1, nums);
+    }
+};
